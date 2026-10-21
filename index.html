@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Simulacro Nacional 2026 · Colombia</title>
+<meta name="description" content="App ciudadana para preparar, ejecutar y reportar el Simulacro Nacional de Respuesta a Emergencias de Colombia — 21 de octubre de 2026, 10:00 a.m. y 2:00 p.m. Plan familiar, cronómetro de evacuación, checklist y acta para WhatsApp.">
+<meta name="theme-color" content="#0b1b33">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Simulacro 2026">
+
+<!-- Open Graph / Twitter -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Vibras Positivas HM">
+<meta property="og:title" content="Simulacro Nacional de Respuesta a Emergencias 2026 · Colombia">
+<meta property="og:description" content="Hoy 21 de octubre, 10:00 a.m. Prepara tu plan, cronometra tu evacuación y genera el acta de tu simulacro. App ciudadana gratuita.">
+<meta property="og:url" content="https://haroldco45.github.io/simulacro-nacional/">
+<meta property="og:image" content="https://haroldco45.github.io/simulacro-nacional/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="es_CO">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Simulacro Nacional 2026 · Colombia">
+<meta name="twitter:description" content="Prepara, ejecuta y reporta tu simulacro. 21 de octubre, 10:00 a.m.">
+<meta name="twitter:image" content="https://haroldco45.github.io/simulacro-nacional/og.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --navy:#0b1b33; --navy-2:#122849; --ink:#0f172a; --muted:#5b6b82;
+  --paper:#f4f6fa; --card:#ffffff; --line:#dde3ec;
+  --alert:#ff6a13; --alert-2:#ffb703; --ok:#1f9d55; --danger:#d7263d;
+  --r:16px; --shadow:0 6px 24px rgba(11,27,51,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'Barlow',system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.45;-webkit-font-smoothing:antialiased;padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+h1,h2,h3,.cond{font-family:'Barlow Condensed','Barlow',sans-serif;letter-spacing:.3px}
+h2{font-size:28px;font-weight:800;text-transform:uppercase;line-height:1.05}
+h3{font-size:20px;font-weight:700;margin-bottom:8px}
+p{margin-bottom:10px}
+a{color:var(--alert)}
+.wrap{max-width:760px;margin:0 auto;padding:16px}
+.hide{display:none!important}
+
+/* Header */
+header{background:var(--navy);color:#fff;position:relative;overflow:hidden}
+header::after{content:"";position:absolute;inset:auto -10% -40% -10%;height:60%;background:repeating-linear-gradient(135deg,var(--alert-2) 0 18px,transparent 18px 36px);opacity:.08;transform:rotate(-3deg)}
+.brand{display:flex;align-items:center;gap:10px;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;opacity:.85}
+.brand .dot{width:10px;height:10px;border-radius:50%;background:var(--alert);box-shadow:0 0 0 4px rgba(255,106,19,.25);animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 4px rgba(255,106,19,.25)}50%{box-shadow:0 0 0 9px rgba(255,106,19,.05)}}
+header h1{font-size:clamp(34px,8vw,56px);font-weight:800;text-transform:uppercase;line-height:.95;margin:14px 0 6px}
+header h1 span{color:var(--alert-2)}
+.sub{font-size:16px;opacity:.9;max-width:560px}
+
+/* Countdown */
+.count{margin-top:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:var(--r);padding:14px 16px;position:relative;z-index:1}
+.count .lbl{font-size:12px;letter-spacing:2px;text-transform:uppercase;opacity:.8}
+.count .time{display:flex;gap:10px;margin-top:6px;align-items:baseline}
+.count .time b{font-family:'Barlow Condensed';font-size:44px;font-weight:800;line-height:1;color:#fff}
+.count .time small{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;opacity:.7;display:block;margin-top:2px}
+.count .now{font-size:13px;opacity:.75;margin-top:8px}
+.live{display:inline-flex;align-items:center;gap:8px;background:var(--danger);color:#fff;font-weight:700;padding:6px 12px;border-radius:999px;font-size:13px;letter-spacing:1px;text-transform:uppercase}
+.live::before{content:"";width:8px;height:8px;border-radius:50%;background:#fff;animation:pulse 1s infinite}
+
+/* Cards */
+.card{background:var(--card);border-radius:var(--r);padding:18px;box-shadow:var(--shadow);margin-top:14px;border:1px solid var(--line)}
+.card.alert{border-left:6px solid var(--alert)}
+.card.ok{border-left:6px solid var(--ok)}
+.card.navy{background:var(--navy);color:#fff;border:0}
+.card.navy .muted{color:#c7d2e3}
+.muted{color:var(--muted);font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.stat{background:var(--paper);border-radius:12px;padding:12px}
+.stat b{display:block;font-family:'Barlow Condensed';font-size:30px;font-weight:800;line-height:1;color:var(--navy)}
+.stat span{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.tag{display:inline-block;background:var(--alert-2);color:var(--navy);font-weight:700;font-size:12px;padding:3px 10px;border-radius:999px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.tag.navy{background:var(--navy);color:#fff}
+.tag.red{background:var(--danger);color:#fff}
+
+/* Forms */
+label{display:block;font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin:12px 0 4px}
+input,select,textarea{width:100%;font:inherit;font-size:16px;padding:12px;border:1.5px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--alert)}
+textarea{min-height:80px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:480px){.row{grid-template-columns:1fr}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:700;font-size:16px;padding:14px 20px;border-radius:12px;border:0;cursor:pointer;background:var(--navy);color:#fff;width:100%;margin-top:12px;transition:transform .08s}
+.btn:active{transform:scale(.98)}
+.btn.alert{background:var(--alert)}
+.btn.ok{background:var(--ok)}
+.btn.ghost{background:#fff;color:var(--navy);border:1.5px solid var(--line)}
+.btn.wa{background:#25D366}
+.btn.sm{width:auto;padding:10px 14px;font-size:14px;margin-top:8px}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+.btn-row .btn{flex:1}
+
+/* Checklist */
+.chk{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.chk:last-child{border-bottom:0}
+.chk input{width:22px;height:22px;flex:none;margin-top:2px;accent-color:var(--ok)}
+.chk span{font-size:15px}
+.chk.done span{color:var(--muted);text-decoration:line-through}
+.progress{height:10px;background:var(--line);border-radius:999px;overflow:hidden;margin:8px 0 4px}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--alert),var(--ok));width:0;transition:width .3s}
+
+/* Drill */
+.drill-step{display:flex;gap:14px;align-items:flex-start;padding:14px;border-radius:12px;background:var(--paper);margin-top:10px;border:2px solid transparent}
+.drill-step.active{border-color:var(--alert);background:#fff7f0}
+.drill-step.done{opacity:.65}
+.drill-step .n{flex:none;width:36px;height:36px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-family:'Barlow Condensed';font-weight:800;font-size:18px}
+.drill-step.done .n{background:var(--ok)}
+.drill-step.active .n{background:var(--alert)}
+.drill-step .t{font-size:13px;color:var(--muted);margin-top:4px}
+.drill-step .lap{font-family:'Barlow Condensed';font-weight:800;font-size:18px;color:var(--navy);margin-left:auto;white-space:nowrap}
+.clock{font-family:'Barlow Condensed';font-size:72px;font-weight:800;text-align:center;line-height:1;color:var(--navy);letter-spacing:2px;margin:8px 0}
+.clock.running{color:var(--alert)}
+.big-list{list-style:none}
+.big-list li{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.big-list li:last-child{border:0}
+.big-list .ico{font-size:24px;flex:none}
+
+/* Report */
+pre.acta{white-space:pre-wrap;font:14px/1.5 'Barlow',sans-serif;background:var(--paper);border-radius:12px;padding:14px;border:1px dashed var(--line);max-height:420px;overflow:auto}
+
+/* Tabs */
+nav.tabs{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:6px 4px calc(6px + env(safe-area-inset-bottom));z-index:50}
+nav.tabs button{flex:1;background:none;border:0;font:inherit;font-size:11px;font-weight:600;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;cursor:pointer;text-transform:uppercase;letter-spacing:.5px}
+nav.tabs button .i{font-size:22px;line-height:1}
+nav.tabs button.on{color:var(--alert)}
+section.view{display:none}
+section.view.on{display:block;animation:fade .25s}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+footer{text-align:center;font-size:12px;color:var(--muted);padding:24px 16px 10px}
+footer b{color:var(--navy)}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 16px;border-radius:999px;font-size:14px;z-index:99;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+#installBtn{position:fixed;top:12px;right:12px;z-index:60;width:auto;margin:0;padding:8px 14px;font-size:13px;background:var(--alert-2);color:var(--navy)}
+</style>
+</head>
+<body>
+
+<button id="installBtn" class="btn hide">⬇ Instalar app</button>
+
+<header>
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span> Vibras Positivas HM · App ciudadana</div>
+    <h1>Simulacro<br>Nacional <span>2026</span></h1>
+    <p class="sub">Miércoles 21 de octubre · Respuesta a Emergencias · Colombia. Prepárate, ejecuta tu simulacro y genera el acta en minutos.</p>
+    <div class="count" id="countBox">
+      <div class="lbl" id="countLbl">Cuenta regresiva · Jornada ciudadana 10:00 a.m.</div>
+      <div class="time" id="countTime"></div>
+      <div class="now">Hora Colombia (Bogotá): <span id="nowClock">--:--:--</span></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ========== INICIO ========== -->
+<section class="view on" id="v-inicio">
+  <div class="card alert">
+    <span class="tag red">Hoy · 21 de octubre de 2026</span>
+    <h2>Dos jornadas, un solo propósito</h2>
+    <div class="grid" style="margin-top:10px">
+      <div class="stat"><b>10:00 a.m.</b><span>Familias, ciudadanía, colegios, empresas y organizaciones</span></div>
+      <div class="stat"><b>2:00 p.m.</b><span>Alcaldías y gobernaciones (validan sus ETRE)</span></div>
+    </div>
+    <p class="muted" style="margin-top:12px">Convocado por la UNGRD mediante la <b>Circular 079 del 31 de agosto de 2026</b>. Por primera vez los hogares participan el mismo día del ejercicio nacional. <b>No son dos horarios para escoger</b>: la ciudadanía participa a las 10:00 a.m.</p>
+  </div>
+
+  <div class="card">
+    <h3>¿Qué se pone a prueba?</h3>
+    <p>“Iremos más allá de evacuar: buscamos <b>validar, decidir y mejorar</b>” — David Tamayo, director de la UNGRD. El simulacro evalúa planes, protocolos, comunicación, coordinación y medidas de autoprotección.</p>
+    <p><b>Evacuar no siempre es la respuesta.</b> Cada territorio define su escenario según su riesgo: sismo, inundación, incendio, deslizamiento o efectos del fenómeno de El Niño (Ideam).</p>
+  </div>
+
+  <div class="card navy">
+    <span class="tag">Contexto</span>
+    <h3>Por qué este año importa más</h3>
+    <p>El <b>10 de agosto de 2026</b> un terremoto de <b>magnitud 7,4</b> con epicentro cerca de San José del Palmar (Chocó) sacudió el país: edificios colapsados en Cali y Pereira, más de 130 personas fallecidas y daños en acueductos y comunicaciones. Fue el sismo más potente registrado en Colombia en lo que va del siglo.</p>
+    <p class="muted">En el Bajo Cauca el riesgo más frecuente es otro: las <b>inundaciones del río Cauca</b> y los aguaceros que anegan barrios enteros. Tu simulacro debe responder a <b>tu</b> amenaza real.</p>
+  </div>
+
+  <div class="card ok">
+    <h3>Haz tu simulacro en 3 pasos</h3>
+    <ul class="big-list">
+      <li><span class="ico">📝</span><div><b>1. Arma tu plan</b><br><span class="muted">Punto de encuentro, ruta, responsables y contactos. Queda guardado en tu celular.</span></div></li>
+      <li><span class="ico">⏱️</span><div><b>2. Ejecuta con cronómetro</b><br><span class="muted">La app te guía paso a paso y mide el tiempo de cada fase.</span></div></li>
+      <li><span class="ico">📄</span><div><b>3. Genera el acta</b><br><span class="muted">Un informe listo para WhatsApp, el colegio, la empresa o el Consejo Municipal de Gestión del Riesgo.</span></div></li>
+    </ul>
+    <button class="btn alert" onclick="go('plan')">Empezar mi plan →</button>
+  </div>
+</section>
+
+<!-- ========== PLAN ========== -->
+<section class="view" id="v-plan">
+  <div class="card">
+    <span class="tag navy">Paso 1</span>
+    <h2>Mi plan de emergencia</h2>
+    <p class="muted">Todo se guarda solo en este dispositivo. No se envía a ningún servidor.</p>
+
+    <label>Nombre del hogar, empresa, colegio o comunidad</label>
+    <input id="p-nombre" placeholder="Ej: Familia Marín · Barrio Colinas del Portal">
+
+    <div class="row">
+      <div><label>Tipo de participante</label>
+        <select id="p-tipo">
+          <option>Hogar / familia</option><option>Empresa / comercio</option><option>Institución educativa</option><option>Conjunto residencial / comunidad</option><option>Entidad pública</option><option>Organización social o comunal</option>
+        </select></div>
+      <div><label>Municipio y departamento</label>
+        <input id="p-municipio" placeholder="Ej: Caucasia, Antioquia"></div>
+    </div>
+
+    <label>Escenario de riesgo que vas a simular</label>
+    <select id="p-escenario">
+      <option value="sismo">🌍 Sismo / terremoto</option>
+      <option value="inundacion">🌊 Inundación / creciente del río</option>
+      <option value="incendio">🔥 Incendio</option>
+      <option value="deslizamiento">⛰️ Deslizamiento / remoción en masa</option>
+      <option value="vendaval">🌪️ Vendaval / tormenta eléctrica</option>
+    </select>
+
+    <div class="row">
+      <div><label>Número de personas</label><input id="p-personas" type="number" min="1" placeholder="Ej: 5"></div>
+      <div><label>Personas con movilidad reducida, niños o adultos mayores</label><input id="p-vulnerables" type="number" min="0" placeholder="Ej: 2"></div>
+    </div>
+
+    <label>Punto de encuentro seguro</label>
+    <input id="p-punto" placeholder="Ej: Parque frente a la casa, lejos de postes y cables">
+
+    <label>Ruta de evacuación</label>
+    <textarea id="p-ruta" placeholder="Ej: Salir por la puerta principal, girar a la derecha, cruzar por la esquina de la tienda hasta el parque."></textarea>
+
+    <label>Responsables y tareas</label>
+    <textarea id="p-responsables" placeholder="Ej: Mamá: niños y botiquín. Papá: cortar gas y luz, llevar documentos. Hijo mayor: mascota y agua."></textarea>
+
+    <label>Contactos de emergencia (nombre y teléfono)</label>
+    <textarea id="p-contactos" placeholder="Ej: Tía Rosa 310 000 0000 · Vecino Carlos 320 000 0000"></textarea>
+    <p class="muted" style="font-size:12px">Aviso de privacidad (Ley 1581 de 2012): estos datos permanecen únicamente en tu dispositivo y los puedes borrar cuando quieras.</p>
+
+    <button class="btn ok" onclick="savePlan(true)">💾 Guardar mi plan</button>
+    <div class="btn-row">
+      <button class="btn ghost sm" onclick="go('simulacro')">Ir al simulacro →</button>
+      <button class="btn ghost sm" onclick="clearAll()">🗑 Borrar todo</button>
+    </div>
+  </div>
+
+  <div class="card" id="scenario-tips"></div>
+</section>
+
+<!-- ========== SIMULACRO ========== -->
+<section class="view" id="v-simulacro">
+  <div class="card alert">
+    <span class="tag red">Paso 2 · En vivo</span>
+    <h2>Ejecutar el simulacro</h2>
+    <p class="muted" id="drill-sub">La alarma se da a las 10:00 a.m. Pulsa INICIAR cuando suene y marca cada fase al completarla.</p>
+    <div class="clock" id="clock">00:00</div>
+    <div class="btn-row">
+      <button class="btn alert" id="btnStart" onclick="drillStart()">🚨 Iniciar alarma</button>
+      <button class="btn ghost" id="btnReset" onclick="drillReset()">Reiniciar</button>
+    </div>
+    <div id="drill-steps"></div>
+  </div>
+
+  <div class="card" id="drill-close">
+    <h3>Cierre y novedades</h3>
+    <div class="row">
+      <div><label>Personas que evacuaron / participaron</label><input id="d-evacuados" type="number" min="0" placeholder="Ej: 5"></div>
+      <div><label>Personas que faltaron en el conteo</label><input id="d-faltantes" type="number" min="0" value="0"></div>
+    </div>
+    <label>Novedades, dificultades y aprendizajes</label>
+    <textarea id="d-novedades" placeholder="Ej: La puerta trasera estaba con candado. Nadie sabía dónde estaba el botiquín. Los niños respondieron bien."></textarea>
+    <label>Calificación general</label>
+    <select id="d-calif"><option>Excelente</option><option selected>Buena</option><option>Regular</option><option>Deficiente</option></select>
+    <button class="btn ok" onclick="saveDrill()">✅ Guardar resultado y ver acta</button>
+  </div>
+</section>
+
+<!-- ========== CHECKLIST ========== -->
+<section class="view" id="v-lista">
+  <div class="card">
+    <span class="tag navy">Preparación</span>
+    <h2>Lista de chequeo</h2>
+    <div class="progress"><i id="chkBar"></i></div>
+    <p class="muted" id="chkTxt">0 de 0 completados</p>
+  </div>
+  <div class="card" id="chk-antes"><h3>🟡 Antes</h3></div>
+  <div class="card" id="chk-durante"><h3>🔴 Durante</h3></div>
+  <div class="card" id="chk-despues"><h3>🟢 Después</h3></div>
+  <div class="card" id="chk-kit"><h3>🎒 Kit de emergencia (72 horas)</h3></div>
+</section>
+
+<!-- ========== ACTA ========== -->
+<section class="view" id="v-acta">
+  <div class="card ok">
+    <span class="tag navy">Paso 3</span>
+    <h2>Acta del simulacro</h2>
+    <p class="muted">Se genera con tu plan, los tiempos del cronómetro y las novedades. Compártela por WhatsApp o guárdala.</p>
+    <pre class="acta" id="acta">Aún no hay datos. Guarda tu plan y ejecuta el simulacro.</pre>
+    <div class="btn-row">
+      <button class="btn wa" onclick="shareWA()">📲 Enviar por WhatsApp</button>
+      <button class="btn ghost" onclick="copyActa()">📋 Copiar</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn ghost sm" onclick="downloadJSON()">⬇ Respaldo .json</button>
+      <button class="btn ghost sm" onclick="shareApp()">🔗 Compartir esta app</button>
+    </div>
+  </div>
+</section>
+
+<!-- ========== INFO ========== -->
+<section class="view" id="v-info">
+  <div class="card">
+    <h2>Líneas de emergencia</h2>
+    <ul class="big-list">
+      <li><span class="ico">🚨</span><div><b>123</b> · Línea única nacional de emergencias</div></li>
+      <li><span class="ico">🚒</span><div><b>119</b> · Bomberos</div></li>
+      <li><span class="ico">⛑️</span><div><b>132</b> · Cruz Roja Colombiana</div></li>
+      <li><span class="ico">🛡️</span><div><b>144</b> · Defensa Civil</div></li>
+      <li><span class="ico">🏛️</span><div><b>UNGRD</b> · 01 8000 113 200 · (601) 552 9696</div></li>
+    </ul>
+    <a class="btn alert" href="tel:123">📞 Llamar al 123</a>
+  </div>
+
+  <div class="card">
+    <h3>Marco oficial</h3>
+    <p><b>Circular 079 del 31 de agosto de 2026 (UNGRD)</b>: dirigida a gobernaciones, alcaldías, consejos territoriales de gestión del riesgo, entidades públicas y privadas y organizaciones comunitarias. Inscripción del 16 de septiembre al 16 de octubre en la plataforma de la UNGRD. Ciclo: <b>preparación → ejecución → evaluación → mejora</b>.</p>
+    <p>Las alcaldías y gobernaciones reportan después de las 2:00 p.m. los instrumentos validados, fortalezas, dificultades y necesidades de asistencia técnica.</p>
+    <p class="muted">Ojo con las cadenas falsas: en septiembre circuló una convocatoria falsa en redes. La única fecha oficial es el <b>21 de octubre de 2026</b>.</p>
+  </div>
+
+  <div class="card">
+    <h3>Fuentes</h3>
+    <p class="muted" style="font-size:13px">
+      · <a href="https://portal.gestiondelriesgo.gov.co/Paginas/Noticias/2026/Atencion-Colombia-UNGRD-definio-la-fecha-para-el-Simulacro-Nacional-de-Respuesta-a-Emergencias-2026.aspx" target="_blank" rel="noopener">UNGRD — fecha oficial Simulacro 2026</a><br>
+      · <a href="https://safetya.co/normatividad/circular-079-de-2026/" target="_blank" rel="noopener">Circular 079 de 2026</a><br>
+      · <a href="https://www.semana.com/nacion/articulo/colombia-se-alista-para-el-simulacro-nacional-de-emergencias-horarios-y-recomendaciones/202605/" target="_blank" rel="noopener">Semana — horarios y recomendaciones</a><br>
+      · <a href="https://www.elpais.com.co/colombia/tras-el-terremoto-este-miercoles-21-de-octubre-se-realizara-el-simulacro-nacional-de-emergencia-asi-se-desarrollara-la-jornada-2027.html" target="_blank" rel="noopener">El País — la jornada tras el terremoto</a><br>
+      · <a href="https://disasterscharter.org/es/activations/earthquake-in-colombia-activation-1048-" target="_blank" rel="noopener">International Charter — sismo 10 ago 2026</a>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <b>Desarrollada por Vibras Positivas HM — Derechos de Autor Reservados</b><br>
+  Caucasia, Antioquia · WhatsApp 311 770 0431 · Hora Colombia (UTC-5)
+</footer>
+
+<nav class="tabs">
+  <button class="on" data-v="inicio"><span class="i">🏠</span>Inicio</button>
+  <button data-v="plan"><span class="i">📝</span>Plan</button>
+  <button data-v="simulacro"><span class="i">⏱️</span>Simulacro</button>
+  <button data-v="lista"><span class="i">✅</span>Lista</button>
+  <button data-v="acta"><span class="i">📄</span>Acta</button>
+  <button data-v="info"><span class="i">ℹ️</span>Info</button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- utilidades ---------- */
+const $=s=>document.querySelector(s);
+const LS='simulacro2026';
+const DB=JSON.parse(localStorage.getItem(LS)||'{}');
+const save=()=>localStorage.setItem(LS,JSON.stringify(DB));
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
+const fmtCO=d=>d.toLocaleTimeString('es-CO',{timeZone:'America/Bogota',hour12:false});
+const pad=n=>String(n).padStart(2,'0');
+const mmss=ms=>{const s=Math.floor(ms/1000);return pad(Math.floor(s/60))+':'+pad(s%60)};
+
+/* ---------- navegación ---------- */
+function go(v){
+  document.querySelectorAll('section.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+v));
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(v==='acta')renderActa();
+}
+document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>go(b.dataset.v));
+
+/* ---------- cuenta regresiva (hora Bogotá) ---------- */
+// 21 oct 2026 10:00 y 14:00 hora Colombia (UTC-5) => 15:00Z y 19:00Z
+const T10=Date.UTC(2026,9,21,15,0,0), T14=Date.UTC(2026,9,21,19,0,0);
+function tick(){
+  const now=Date.now(); $('#nowClock').textContent=fmtCO(new Date(now));
+  const box=$('#countTime'),lbl=$('#countLbl');
+  let target,label;
+  if(now<T10){target=T10;label='Cuenta regresiva · Jornada ciudadana 10:00 a.m.'}
+  else if(now<T10+3600e3){box.innerHTML='<span class="live">Simulacro ciudadano en curso</span>';lbl.textContent='Jornada ciudadana · 10:00 a.m.';return}
+  else if(now<T14){target=T14;label='Cuenta regresiva · Jornada territorial 2:00 p.m.'}
+  else if(now<T14+3600e3){box.innerHTML='<span class="live">Simulación de alcaldías y gobernaciones en curso</span>';lbl.textContent='Jornada territorial · 2:00 p.m.';return}
+  else{lbl.textContent='Simulacro Nacional 2026';box.innerHTML='<span class="live" style="background:var(--ok)">Jornada cumplida · Ahora toca evaluar y mejorar</span>';return}
+  lbl.textContent=label;
+  let d=target-now;const h=Math.floor(d/3600e3);d-=h*3600e3;const m=Math.floor(d/60e3);d-=m*60e3;const s=Math.floor(d/1e3);
+  const days=Math.floor(h/24);
+  box.innerHTML=(days>0?`<div><b>${days}</b><small>días</small></div>`:'')+`<div><b>${pad(h%24)}</b><small>horas</small></div><div><b>${pad(m)}</b><small>min</small></div><div><b>${pad(s)}</b><small>seg</small></div>`;
+}
+tick();setInterval(tick,1000);
+
+/* ---------- escenarios ---------- */
+const ESC={
+ sismo:{n:'Sismo / terremoto',steps:['Alarma: todos se enteran y dejan lo que están haciendo','Protégete: AGÁCHATE, CÚBRETE y SUJÉTATE bajo una mesa firme, lejos de ventanas','Espera a que pase el movimiento (cuenta 60 segundos)','Evacúa en calma por la ruta definida, sin correr ni usar ascensor','Conteo en el punto de encuentro: ¿están todos?','Reporte: revisa heridos, daños, gas y luz; comunica novedades'],
+  tips:['Fija a la pared muebles altos y televisores.','Ubica la "zona segura" de cada habitación: lejos de vidrios y objetos que caigan.','Después del sismo pueden venir réplicas: no vuelvas a entrar hasta revisar la estructura.','Ten linterna y pito a la mano; evita velas por fugas de gas.']},
+ inundacion:{n:'Inundación / creciente',steps:['Alarma: aviso de creciente o lluvia intensa (sirena, WhatsApp del barrio, radio)','Corta la energía eléctrica y cierra el gas; sube electrodomésticos y documentos','Reúne a la familia, mascotas y el kit de emergencia','Evacúa hacia la zona alta definida ANTES de que el agua suba; no cruces corrientes','Conteo en el punto de encuentro: ¿están todos?','Reporte al 123 / Consejo Municipal de Gestión del Riesgo con novedades'],
+  tips:['Conoce los niveles históricos del río Cauca y la quebrada de tu barrio.','Guarda documentos en bolsas plásticas selladas y en alto.','Nunca camines ni conduzcas sobre agua en movimiento: 15 cm pueden tumbarte.','Acuerda con vecinos una red de sirenas o un grupo de WhatsApp de alerta.']},
+ incendio:{n:'Incendio',steps:['Alarma: alguien grita FUEGO / suena el detector','Si el fuego es pequeño y sabes usar el extintor, ataca; si no, sal de inmediato','Agáchate bajo el humo, tapa nariz y boca con tela; cierra puertas detrás de ti','Evacúa por la ruta señalada; NO regreses por objetos','Conteo en el punto de encuentro: ¿están todos?','Llama al 119 / 123 e informa personas faltantes y ubicación del fuego'],
+  tips:['Revisa cableado, multitomas recalentadas y la pipeta de gas.','Ten un extintor ABC vigente y sabe dónde está.','Si la ropa se incendia: DETENTE, TÍRATE y RUEDA.','Define dos salidas por si una está bloqueada.']},
+ deslizamiento:{n:'Deslizamiento',steps:['Alarma: grietas nuevas, árboles o postes inclinados, ruidos extraños en la ladera, lluvia prolongada','Avisa a vecinos y autoridades; no esperes a ver el movimiento','Toma el kit y a la familia; aléjate de la trayectoria del posible deslizamiento','Evacúa hacia terreno firme y alto, lejos de la ladera','Conteo en el punto de encuentro: ¿están todos?','Reporte al 123 y al Consejo Municipal de Gestión del Riesgo'],
+  tips:['Observa cambios en la ladera después de cada aguacero.','No construyas ni rellenes al pie de taludes.','Mantén canales y drenajes despejados.','Si hay orden de evacuación preventiva, cúmplela.']},
+ vendaval:{n:'Vendaval / tormenta eléctrica',steps:['Alarma: cielo oscuro, ráfagas de viento, truenos cercanos','Entra a un lugar cerrado y resistente; aléjate de ventanas, techos de zinc y árboles','Desconecta aparatos eléctricos; no uses el teléfono con cable ni la ducha','Permanece a resguardo hasta 30 min después del último trueno','Conteo: ¿todos están bajo techo seguro?','Reporte: revisa techos, cables caídos (no los toques) y avisa al 123'],
+  tips:['Asegura láminas de zinc y objetos sueltos en patios y terrazas.','Poda ramas que puedan caer sobre la casa o cables.','Si estás a campo abierto, agáchate lejos de árboles aislados; no te acuestes.','Ten radio de pilas para seguir los avisos del Ideam.']}
+};
+function renderTips(){
+  const e=ESC[$('#p-escenario').value];
+  $('#scenario-tips').innerHTML=`<span class="tag">Recomendaciones · ${e.n}</span><h3>Para que tu simulacro sea realista</h3><ul class="big-list">${e.tips.map(t=>`<li><span class="ico">👉</span><div>${t}</div></li>`).join('')}</ul>`;
+}
+$('#p-escenario').onchange=()=>{renderTips();savePlan(false);renderDrill()};
+
+/* ---------- plan ---------- */
+const PF=['nombre','tipo','municipio','escenario','personas','vulnerables','punto','ruta','responsables','contactos'];
+function savePlan(msg){
+  DB.plan=DB.plan||{};PF.forEach(f=>DB.plan[f]=$('#p-'+f).value);DB.plan.guardado=new Date().toISOString();save();
+  if(msg)toast('Plan guardado en este dispositivo ✅');
+}
+function loadPlan(){
+  if(!DB.plan)return;PF.forEach(f=>{if(DB.plan[f]!=null)$('#p-'+f).value=DB.plan[f]});
+}
+PF.forEach(f=>$('#p-'+f).addEventListener('change',()=>savePlan(false)));
+function clearAll(){if(confirm('¿Borrar plan, simulacro y lista de chequeo de este dispositivo?')){localStorage.removeItem(LS);location.reload()}}
+
+/* ---------- simulacro con cronómetro ---------- */
+let timer=null;
+function drillState(){DB.drill=DB.drill||{start:null,laps:[],end:null};return DB.drill}
+function renderDrill(){
+  const e=ESC[($('#p-escenario').value)||'sismo'],d=drillState();
+  $('#drill-sub').textContent=`Escenario: ${e.n}. Pulsa INICIAR cuando suene la alarma y marca cada fase al completarla.`;
+  const done=d.laps.length;
+  $('#drill-steps').innerHTML=e.steps.map((s,i)=>{
+    const cls=i<done?'done':(i===done&&d.start&&!d.end?'active':'');
+    const lap=d.laps[i]?`<span class="lap">${mmss(d.laps[i])}</span>`:'';
+    const btn=(i===done&&d.start&&!d.end)?`<button class="btn ok sm" onclick="drillLap()">✔ Fase cumplida</button>`:'';
+    return `<div class="drill-step ${cls}"><div class="n">${i+1}</div><div style="flex:1"><div>${s}</div>${btn}</div>${lap}</div>`;
+  }).join('');
+  $('#btnStart').classList.toggle('hide',!!d.start);
+  $('#clock').classList.toggle('running',!!d.start&&!d.end);
+  if(d.start&&!timer&&!d.end){timer=setInterval(()=>{$('#clock').textContent=mmss(Date.now()-d.start)},250)}
+  if(d.end){clearInterval(timer);timer=null;$('#clock').textContent=mmss(d.end-d.start)}
+  if(!d.start){$('#clock').textContent='00:00'}
+}
+function drillStart(){
+  const d=drillState();d.start=Date.now();d.laps=[];d.end=null;save();
+  if(navigator.vibrate)navigator.vibrate([300,100,300,100,600]);
+  beep();renderDrill();toast('🚨 ¡Alarma! Simulacro iniciado');
+}
+function drillLap(){
+  const d=drillState(),e=ESC[$('#p-escenario').value||'sismo'];
+  d.laps.push(Date.now()-d.start);
+  if(d.laps.length>=e.steps.length){d.end=Date.now();toast(`Simulacro completado en ${mmss(d.end-d.start)} 🎉`);if(navigator.vibrate)navigator.vibrate(200)}
+  save();renderDrill();
+}
+function drillReset(){if(confirm('¿Reiniciar el cronómetro y las fases?')){DB.drill={start:null,laps:[],end:null};clearInterval(timer);timer=null;save();renderDrill()}}
+function beep(){try{const a=new (window.AudioContext||window.webkitAudioContext)();const o=a.createOscillator(),g=a.createGain();o.type='square';o.frequency.value=880;g.gain.value=.15;o.connect(g);g.connect(a.destination);o.start();let n=0;const iv=setInterval(()=>{o.frequency.value=n%2?880:660;if(++n>5){o.stop();clearInterval(iv)}},250)}catch(e){}}
+function saveDrill(){
+  const d=drillState();d.evacuados=$('#d-evacuados').value;d.faltantes=$('#d-faltantes').value;d.novedades=$('#d-novedades').value;d.calif=$('#d-calif').value;save();toast('Resultado guardado');go('acta');
+}
+['evacuados','faltantes','novedades','calif'].forEach(f=>$('#d-'+f).addEventListener('change',()=>{const d=drillState();d[f]=$('#d-'+f).value;save()}));
+
+/* ---------- checklist ---------- */
+const CHK={
+ antes:['Conocemos la amenaza principal de nuestra zona (sismo, inundación, incendio…)','Definimos punto de encuentro seguro y dos rutas de salida','Cada persona tiene una tarea asignada (niños, adultos mayores, mascotas, documentos)','Contactos de emergencia actualizados y pegados en la nevera / guardados en el celular','Sabemos cortar la energía, el agua y el gas','Kit de emergencia listo y en un lugar accesible','Revisamos muebles altos, techos, cables y pipetas de gas','Le avisamos a los vecinos y al conjunto / barrio que haremos el simulacro a las 10:00 a.m.'],
+ durante:['Todos reconocieron la alarma y suspendieron actividades','Aplicamos la medida de autoprotección del escenario (cubrirse, subir a zona alta, salir del humo…)','Evacuamos sin correr, sin gritar y sin devolvernos','Ayudamos a niños, adultos mayores y personas con discapacidad','Llegamos al punto de encuentro y contamos a todos','Simulamos la llamada al 123 con datos claros: qué pasa, dónde, cuántas personas'],
+ despues:['Registramos el tiempo total de evacuación','Anotamos lo que falló y lo que funcionó','Acordamos los ajustes al plan y quién los hace','Compartimos el acta con la familia, el colegio, la empresa o el Consejo Municipal de Gestión del Riesgo','Programamos el próximo simulacro (cada 6 meses)'],
+ kit:['Agua: 3 litros por persona para 3 días','Alimentos no perecederos y abrelatas','Botiquín y medicamentos de uso diario','Linterna, pilas, radio de pilas y pito','Copias de documentos en bolsa sellada y algo de efectivo','Ropa, cobija ligera y elementos de aseo','Cargador portátil y lista de contactos impresa','Alimento, agua y guacal o collar para mascotas','Tapabocas, guantes y bolsas plásticas']
+};
+function renderChk(){
+  DB.chk=DB.chk||{};let tot=0,ok=0;
+  Object.keys(CHK).forEach(k=>{
+    const box=$('#chk-'+k);box.querySelectorAll('.chk').forEach(x=>x.remove());
+    CHK[k].forEach((t,i)=>{const id=k+i,on=!!DB.chk[id];tot++;if(on)ok++;
+      const l=document.createElement('label');l.className='chk'+(on?' done':'');l.innerHTML=`<input type="checkbox" ${on?'checked':''}><span>${t}</span>`;
+      l.querySelector('input').onchange=e=>{DB.chk[id]=e.target.checked;save();renderChk()};box.appendChild(l)});
+  });
+  $('#chkBar').style.width=(tot?ok/tot*100:0)+'%';$('#chkTxt').textContent=`${ok} de ${tot} completados`;
+}
+
+/* ---------- acta ---------- */
+function actaText(){
+  const p=DB.plan||{},d=DB.drill||{},e=ESC[p.escenario||'sismo'];
+  const fecha=new Date().toLocaleDateString('es-CO',{timeZone:'America/Bogota',weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const hora=d.start?new Date(d.start).toLocaleTimeString('es-CO',{timeZone:'America/Bogota',hour:'2-digit',minute:'2-digit'}):'—';
+  const chk=DB.chk||{};let tot=0,ok=0;Object.keys(CHK).forEach(k=>CHK[k].forEach((_,i)=>{tot++;if(chk[k+i])ok++}));
+  let s=`📋 *ACTA DE SIMULACRO*\n*Simulacro Nacional de Respuesta a Emergencias 2026*\n\n`;
+  s+=`🏷️ Participante: ${p.nombre||'—'}\n👥 Tipo: ${p.tipo||'—'}\n📍 Lugar: ${p.municipio||'—'}\n📅 Fecha: ${fecha}\n⏰ Hora de inicio (Colombia): ${hora}\n⚠️ Escenario: ${e.n}\n`;
+  s+=`👨‍👩‍👧 Personas en el plan: ${p.personas||'—'} (prioritarias: ${p.vulnerables||0})\n🚩 Punto de encuentro: ${p.punto||'—'}\n`;
+  s+=`\n⏱️ *TIEMPOS POR FASE*\n`;
+  if(d.laps&&d.laps.length){let prev=0;e.steps.forEach((st,i)=>{if(d.laps[i]!=null){s+=`${i+1}. ${st.split(':')[0]} — ${mmss(d.laps[i])} (+${mmss(d.laps[i]-prev)})\n`;prev=d.laps[i]}});s+=`*Tiempo total: ${d.end?mmss(d.end-d.start):'en curso'}*\n`}else s+='Sin ejecutar todavía.\n';
+  s+=`\n✅ Participaron: ${d.evacuados||'—'} · Faltantes en el conteo: ${d.faltantes||0}\n⭐ Calificación: ${d.calif||'—'}\n📝 Novedades: ${d.novedades||'—'}\n`;
+  s+=`\n📌 Lista de chequeo: ${ok}/${tot} ítems cumplidos\n`;
+  s+=`\n_Generada con la app Simulacro Nacional 2026 · Vibras Positivas HM_\nhttps://haroldco45.github.io/simulacro-nacional/`;
+  return s;
+}
+function renderActa(){$('#acta').textContent=actaText().replace(/\*/g,'')}
+function shareWA(){window.open('https://wa.me/?text='+encodeURIComponent(actaText()),'_blank')}
+function copyActa(){navigator.clipboard.writeText(actaText().replace(/\*/g,'')).then(()=>toast('Acta copiada'))}
+function downloadJSON(){const b=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='simulacro-2026-respaldo.json';a.click()}
+function shareApp(){const u='https://haroldco45.github.io/simulacro-nacional/';const t='Hoy es el Simulacro Nacional 🇨🇴 10:00 a.m. Prepara tu plan, cronometra tu evacuación y genera el acta con esta app gratis: ';if(navigator.share)navigator.share({title:'Simulacro Nacional 2026',text:t,url:u});else window.open('https://wa.me/?text='+encodeURIComponent(t+u),'_blank')}
+
+/* ---------- PWA ---------- */
+let deferred;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;$('#installBtn').classList.remove('hide')});
+$('#installBtn').onclick=async()=>{if(!deferred)return;deferred.prompt();await deferred.userChoice;deferred=null;$('#installBtn').classList.add('hide')};
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
+
+/* ---------- init ---------- */
+loadPlan();renderTips();renderDrill();renderChk();
+if(DB.drill){['evacuados','faltantes','novedades','calif'].forEach(f=>{if(DB.drill[f]!=null)$('#d-'+f).value=DB.drill[f]})}
+</script>
+</body>
+</html>
